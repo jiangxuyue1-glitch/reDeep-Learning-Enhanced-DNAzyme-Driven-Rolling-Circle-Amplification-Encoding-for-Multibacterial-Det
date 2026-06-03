@@ -1,0 +1,34 @@
+seed: 42
+stamp: jiangxuyue
+data:
+  data_dir: data
+  train_split: train
+  val_split: val
+  test_split: test
+  csv_encoding: gbk
+  image_size: 128
+  threshold: 0.1
+  strict_paths: true
+model:
+  name: multitask_concentration_cnn
+  dropout: 0.5
+  num_classes: 2
+  width: 1
+training:
+  epochs: 100
+  batch_size: 32
+  num_workers: 0
+  optimizer: adam
+  learning_rate: 0.001
+  weight_decay: 0.0
+  class_weight: 1.0
+  reg_weight: 1.0
+  scheduler: reduce_on_plateau
+  early_stopping_patience: 20
+  regression_loss: smooth_l1
+output:
+  run_dir: runs/default
+  save_best: true
+  save_final: true
+  save_mistakes: true
+  save_all_results: true

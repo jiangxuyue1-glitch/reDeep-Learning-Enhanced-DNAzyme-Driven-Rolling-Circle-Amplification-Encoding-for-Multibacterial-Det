@@ -1,54 +1,38 @@
-# Deep Learning–Enhanced DNAzyme-Driven Rolling-Circle Amplification Encoding for Multibacterial Detection
+# BactoRCANet
 
----
+BactoRCANet is a standalone Python package for image-based multi-task bacterial concentration analysis. It replaces the single-script workflow with configurable modules for data loading, transforms, model definition, losses, training, evaluation, reporting, and inference.
 
-## Overview
+Package mark: `jiangxuyue`.
 
-This repository contains the **complete deep learning pipeline** used for simultaneous detection of multiple bacterial species via images.  
-The model is a multi‑task convolutional neural network (CNN) that:
+## Install
 
-- Classifies the presence/absence of three bacterial targets  
-- Predicts the continuous concentrations of each target (regression)  
-
-The code includes data loading, model definition, training, evaluation, and inference on new images.  
-A pre‑trained best model (`best_concentration_model.pth`) is provided.
-
----
-
-## Repository Structure
-```
-.
-├── multitask_cnn.py # Full training and evaluation script
-├── best_concentration_model.pth # Pre‑trained model weights (best on validation set)
-├── requirements.txt # Python dependencies
-└── README.md
+```bash
+pip install -e .
 ```
 
-## Dataset Information
+## Train
 
-The full dataset used in the paper is not publicly available due to ongoing related studies. However, it can be obtained from the corresponding author upon reasonable request for academic research purposes.
-If you wish to train or test the model on your own data, please prepare your dataset in the following format.
+```bash
+bactorcanet train --config configs/default.yaml --data-dir data --output-dir runs/default
+```
 
-### Data Format
-The training/validation/test sets should be organized as separate folders (e.g., `train/`, `val/`, `test/`), each containing:
-- A CSV file with the same name as the folder (e.g., `train.csv`), containing the following columns:
-  - `image_path`: absolute or relative path to the image file
-  - `x`, `y`, `z`: continuous concentration values (used for both classification and regression)
-- The actual image files (e.g., `.jpg`, `.png`) referenced in the CSV.
-**Important:** The code automatically converts continuous concentrations into binary classification labels. Ensure your data follows this logic.
+## Evaluate
 
-## How to Use
-1. Clone or download this repository. 
+```bash
+bactorcanet evaluate --checkpoint runs/default/best.pt --data-dir data --split test --output-dir reports/test
+```
 
-2. Install the required Python packages (requirements.txt). 
+## Predict
 
-3. Use `multitask_cnn.py` to train the model on your own data (modify `base_dir` as needed). 
+```bash
+bactorcanet predict --checkpoint runs/default/best.pt --image path/to/image.png --output prediction.json
+```
 
-4. Load `best_concentration_model.pth` and use `predict_unknown_image` for inference on new images.  
+## Data
+
+Each split contains a CSV file named after the split and columns `image_path`, `x`, `y`, and `z`. The values in `x`, `y`, and `z` are used both as regression targets and as source values for binary labels.
 
 
-## License
-All code  is released for academic and non-commercial use.
+## Legacy note
 
-## Contact
-For questions about the code or data availability, please contact: lijiuxing@dlut.edu.cn; yychang@dlut.edu.cn; mliu@dlut.edu.cn.
+The previous script `multitask_cnn.py` remains available for reference; new work should use the `bactorcanet` package.
